@@ -2,6 +2,24 @@ import os
 import json
 from typing import List, Dict
 
+def load_json(
+        save_path: str
+    ):
+    """Load the json file
+    """
+    with open(save_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+    
+    
+def save_json(
+        json_obj,
+       save_path: str 
+    ):
+    """Save the json file
+    """
+    with open(save_path, "w", encoding="utf-8") as f:
+        json.dump(json_obj, f, ensure_ascii=False)
+
 
 def load_id_list(
         data_root: str = "data",
@@ -12,9 +30,8 @@ def load_id_list(
     load_path = os.path.join(data_root, f"{type}_ids.json")
 
     print(f"Loading the {type} id list from {load_path}")
-
-    with open(load_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    
+    return load_json(load_path)
     
 
 def save_id_list(
@@ -31,8 +48,7 @@ def save_id_list(
         old_id_list = load_id_list(data_root, type)
         id_list = list(set(id_list) + set(old_id_list))
 
-    with open(save_path, "w", encoding="utf-8") as f:
-        json.dump(id_list, f, ensure_ascii=False)
+    save_json(id_list, save_path)
 
     print(f"Saved the {type} id list to {save_path}")
 
@@ -46,8 +62,7 @@ def load_failed_pages(
 
     print(f"Loading the {type} failed pages from {load_path}")
 
-    with open(load_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    return load_json(load_path)
 
 
 def save_failed_pages(
@@ -58,8 +73,7 @@ def save_failed_pages(
     """
     save_path = os.path.join(data_root, f"{type}_failed_pages.json")
 
-    with open(save_path, "w", encoding="utf-8") as f:
-        json.dump(failed_pages, f, ensure_ascii=False)
+    save_json(failed_pages, save_path)
 
     print(f"Saved the {type} failed pages to {save_path}")
 
@@ -74,8 +88,7 @@ def load_cards(
 
     print(f"Loading the {type} cards from {load_path}")
 
-    with open(load_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    return load_json(load_path)
     
 
 def save_cards(
@@ -92,8 +105,7 @@ def save_cards(
         old_cards = load_cards(data_root, type)
         cards = {**old_cards, **cards}
 
-    with open(save_path, "w", encoding="utf-8") as f:
-        json.dump(cards, f, ensure_ascii=False)
+    save_json(cards, save_path)
 
     print(f"Saved the {type} cards to {save_path}")
 
@@ -107,8 +119,7 @@ def load_failed_repos(
 
     print(f"Loading the {type} failed repos from {load_path}")
 
-    with open(load_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    return load_json(load_path)
     
 
 def save_failed_repos(
@@ -119,7 +130,7 @@ def save_failed_repos(
     """
     save_path = os.path.join(data_root, f"{type}_failed_repos.json")
 
-    with open(save_path, "w", encoding="utf-8") as f:
-        json.dump(failed_repos, f, ensure_ascii=False)
+    save_json(failed_repos, save_path)
 
     print(f"Saved the {type} failed repos to {save_path}")
+
