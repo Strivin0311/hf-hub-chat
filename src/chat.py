@@ -1,5 +1,7 @@
 import os
 from typing import List, Dict, Union
+from tqdm import tqdm
+from tqdm.notebook import tqdm as tqdm_notebook
 
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -72,9 +74,13 @@ def chat_cards(
         mode: str = 'each',
         max_length: int = 10000,
         verbose: bool = False,
+        process_bar: str = 'shell',
     ) -> List[Union[str, Dict[str,str]]]:
     """Chat with the model cards about the query
     """
+    import warnings
+    warnings.filterwarnings("ignore", category=DeprecationWarning) # FIXME: for lanchain 0.2.0, the class OpenAI will be moved, and now it will raise DeprecationWarning
+
     prompt_template = PromptTemplate.from_template({
         'each': f"Given the following {type} cards on Hugging Face:\n" + "{card}\n\n" + 
         f"Please answer the question about this certain {type} below:\n" + "{query}\n\nAnswer:",
@@ -87,10 +93,18 @@ def chat_cards(
     
     if mode == "each":
         llm_chain = LLMChain(llm=chat_bot, prompt=prompt_template)
-        for repo_addr, card in cards.items():
+        
+        pbar = {
+            'shell': tqdm,
+            'notebook': tqdm_notebook,
+            'none': lambda x: x
+        }.get(process_bar, lambda x: x)(cards.items())
+        for repo_addr, card in pbar:
             repo_id = repo_addr.replace(hf_prefix, '')
             if verbose: print(info_str(f"Chatting with the {type} from its card with the repo: {repo_id}"))
-            
+            if hasattr(pbar, 'set_postfix'): 
+                pbar.set_postfix(succeeded=f"{len(responses)}", failed=f"{len(failed_cards)}")
+                
             try: 
                 response = llm_chain.run(query=query, card=card[:max_length])
                 responses.append(dict(response=response, repo_addr=repo_addr))
@@ -99,6 +113,9 @@ def chat_cards(
                 print(info_str(f"Error happened when chatting with {repo_id}", side_str='*'))
                 if verbose: print(e)
                 failed_cards.append(repo_addr)
+                
+            if hasattr(pbar, 'set_postfix'): 
+                pbar.set_postfix(succeeded=f"{len(responses)}", failed=f"{len(failed_cards)}")
             
     elif mode == "all":
         retriever = build_cards_retriever(cards, type=type, verbose=verbose)
@@ -111,7 +128,6 @@ def chat_cards(
         except Exception as e:
             print(info_str(f"Error happened when chatting with all the {type}s", side_str='*'))
             if verbose: print(e)
-            failed_cards = list(cards.keys())
         
     return responses, failed_cards
             

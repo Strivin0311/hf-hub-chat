@@ -1,6 +1,7 @@
 import re
 from typing import List, Union, Dict
 from tqdm import tqdm
+from tqdm.notebook import tqdm as tqdm_notebook
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -25,7 +26,9 @@ def search_hf_hub_page_for_id_list(
         page: Union[int, tuple, list] = 1, 
         type: str = "model",
         driver: str = 'chrome',
-        verbose: bool = False) -> List[str]:
+        verbose: bool = False,
+        process_bar: str = 'shell',
+    ) -> List[str]:
     """Searches the Hugging Face {Model / Dataset} Hub list to get the id list at certain page with the index `page_idx`
     and return a webpage string list.
     """
@@ -44,8 +47,9 @@ def search_hf_hub_page_for_id_list(
                 model_ids.append(model_id_ref.get_attribute('href'))
                 
         except Exception as e: 
-            print(f"Error happened on page {page_idx}")
-            if verbose: print(e)
+            if verbose: 
+                print(f"Error happened on page {page_idx}")
+                print(e)
         finally:
             return model_ids
         
@@ -60,11 +64,20 @@ def search_hf_hub_page_for_id_list(
     driver = get_driver(driver)
     model_ids_all, failed_pages = [], []
     
-    for page_idx in tqdm(page_idxs):
+    pbar = {
+            'shell': tqdm,
+            'notebook': tqdm_notebook,
+            'none': lambda x: x
+        }.get(process_bar, lambda x: x)(page_idxs)
+    for page_idx in pbar:
+        if hasattr(pbar, 'set_postfix'): pbar.set_description(succeeded=f"{len(model_ids_all)}", failed=f"{len(failed_pages)}")
+    
         model_ids = search_single_page(page_idx)
         if model_ids == []: failed_pages.append(page_idx)
         else: model_ids_all.extend(model_ids)
         
+        if hasattr(pbar, 'set_postfix'): pbar.set_description(succeeded=f"{len(model_ids_all)}", failed=f"{len(failed_pages)}")
+
     driver.quit() # Close the WebDriver
 
     return model_ids_all, failed_pages
@@ -76,6 +89,7 @@ def search_hf_hub_repo_for_card(
         driver: str = 'chrome', 
         search_type: str = 'simple',
         verbose: bool = False,
+        process_bar: str = 'shell',
     ) -> Dict[str,str]:
         
     def collect_text_from_element(element):
@@ -88,17 +102,19 @@ def search_hf_hub_repo_for_card(
         return "\n\n".join(texts)
     
     def search_single_repo(repo_addr):
+        card_text = "" 
         try:
             driver.get(repo_addr)
-            model_card = driver.find_element(By.CSS_SELECTOR, "div.prose")
+            card = driver.find_element(By.CSS_SELECTOR, "div.prose")
             if search_type == "simple":
-                model_card_text = model_card.text
-            else: model_card_text = collect_text_from_element(model_card)
+                card_text = card.text
+            else: card_text = collect_text_from_element(card)
         except Exception as e:
-            print(f"Error happened on {repo_addr}")
-            if verbose: print(e)
+            if verbose: 
+                print(f"Error happened on {repo_addr}")
+                print(e)
         finally:
-            return model_card_text
+            return card_text
 
     if isinstance(repo, str):
         repo_addrs = [repo]
@@ -109,11 +125,22 @@ def search_hf_hub_repo_for_card(
     driver = get_driver(driver)
     model_cards, failed_repos = {}, []
 
-    for repo_addr in tqdm(repo_addrs):
+    pbar = {
+            'shell': tqdm,
+            'notebook': tqdm_notebook,
+            'none': lambda x: x
+        }.get(process_bar, lambda x: x)(repo_addrs)
+    for repo_addr in pbar:
+        if hasattr(pbar, 'set_postfix'): 
+            pbar.set_postfix(succeeded=f"{len(model_cards)}", failed=f"{len(failed_repos)}")
+        
         model_card = search_single_repo(repo_addr)
         if model_card == "": failed_repos.append(repo_addr)
-        model_cards[repo_addr] = model_card
-    
+        else: model_cards[repo_addr] = model_card
+        
+        if hasattr(pbar, 'set_postfix'): 
+            pbar.set_postfix(succeeded=f"{len(model_cards)}", failed=f"{len(failed_repos)}")
+        
     driver.quit() # Close the WebDriver
 
     return model_cards, failed_repos

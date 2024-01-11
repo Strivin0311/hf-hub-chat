@@ -13,10 +13,11 @@ def load_json(
     
 def save_json(
         json_obj,
-       save_path: str 
+       save_path: str,
     ):
     """Save the json file
     """
+    
     with open(save_path, "w", encoding="utf-8") as f:
         json.dump(json_obj, f, ensure_ascii=False)
 
@@ -46,15 +47,16 @@ def save_id_list(
 
     if not overwrite and os.path.exists(save_path):
         old_id_list = load_id_list(data_root, type)
-        id_list = list(set(id_list) + set(old_id_list))
+        id_list = old_id_list + id_list
 
-    save_json(id_list, save_path)
+    save_json(list(set(id_list)), save_path)
 
     print(f"Saved the {type} id list to {save_path}")
 
 
 def load_failed_pages(
         data_root: str = "data",
+        type: str = 'model',
     ) -> List[int]:
     """Load the failed pages from the json file
     """
@@ -68,12 +70,18 @@ def load_failed_pages(
 def save_failed_pages(
         failed_pages: List[int],
         data_root: str = "data",
+        type: str = 'model',
+        overwrite: bool = False
     ) -> None:
     """Save the failed pages to the json file
     """
     save_path = os.path.join(data_root, f"{type}_failed_pages.json")
+    
+    if not overwrite and os.path.exists(save_path):
+        old_failed_pages = load_failed_pages(data_root, type)
+        failed_pages = old_failed_pages + failed_pages
 
-    save_json(failed_pages, save_path)
+    save_json(list(set(failed_pages)), save_path)
 
     print(f"Saved the {type} failed pages to {save_path}")
 
@@ -112,6 +120,7 @@ def save_cards(
 
 def load_failed_repos(
         data_root: str = "data",
+        type: str = 'model',
     ) -> List[int]:
     """Load the failed repos from the json file
     """
@@ -123,14 +132,20 @@ def load_failed_repos(
     
 
 def save_failed_repos(
-        failed_repos: List[int],
+        failed_repos: List[str],
         data_root: str = "data",
+        type: str = 'model',
+        overwrite: bool = False
     ) -> None:
     """Save the failed repos to the json file
     """
     save_path = os.path.join(data_root, f"{type}_failed_repos.json")
+    
+    if not overwrite and os.path.exists(save_path):
+        old_failed_repos = load_failed_repos(data_root, type)
+        failed_repos = old_failed_repos + failed_repos
 
-    save_json(failed_repos, save_path)
+    save_json(list(set(failed_repos)), save_path)
 
     print(f"Saved the {type} failed repos to {save_path}")
 
