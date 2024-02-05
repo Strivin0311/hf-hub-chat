@@ -1,0 +1,94 @@
+{
+    "llama2-7b": {
+        "multi-languages": [
+            {
+                "addr": "https://huggingface.co/FlagAlpha/Llama2-Chinese-7b-Chat-LoRA",
+                "desc": "chinese chat alignment"
+            },
+            {
+                "addr": "https://huggingface.co/Sparticle/llama-2-7b-chat-japanese-lora",
+                "desc": "fine-tuned Llama2-7b-chat-hf model with Japanese dataset with LoRA"
+            },
+            {
+                "addr": "https://huggingface.co/Tarklanse/Llama2-7B_Traditional_Chinese_roleplay_chat_lora",
+                "desc": "fine-tuned llama2 7B Chat for traditional chinese characters"
+            },
+            {
+                "addr": "https://huggingface.co/RuterNorway/Llama-2-7b-chat-norwegian-LoRa",
+                "desc": "finetuned Llama-2-7b-chat on a mix of norwegian datasets"
+            }
+        ],
+        "ift": [
+            {
+                "addr": "https://huggingface.co/unionai/Llama-2-7b-LoRA-alpaca-cleaned",
+                "desc": "ift on the alpaca-cleaned dataset with LLaMA-7B"
+            },
+            {
+                "addr": "https://huggingface.co/RicardoLee/Llama2-chat-7B-Chinese-withCode3W-LoRA",
+                "desc": "fine-tuned Llama2-chat-7B using 50w BELLE and code-python-instruct datasets"
+            },
+            {
+                "addr": "https://huggingface.co/SyedAunZaidi/llama-2-7B-finetuned-dolly-lora",
+                "desc": "finetuned Llama-2-7b-chat on dolly dataset"
+            }
+        ],
+        "multi-tasks": [
+            {
+                "addr": "https://huggingface.co/awaisakhtar/llama-2-7b-summarization-finetuned-on-xsum-lora-adapter",
+                "desc": "fine-tuned Llama-2-7b on XSum dataset for summarization"
+            },
+            {
+                "addr": "https://huggingface.co/FinGPT/fingpt-forecaster_dow30_llama2-7b_lora",
+                "desc": "prediction of stock price movement for the coming week and its analysis summary"
+            },
+            {
+                "addr": "https://huggingface.co/FinGPT/fingpt-mt_llama2-7b_lora",
+                "desc": "fine-tuned Llama2-7B on financial tasks including Sentiment Analysis, Relation Extraction, Headline Classification, Named Entity Recognition"
+            },
+            {
+                "addr": "https://huggingface.co/abcdabcd987/viggo-llama2-7b-lora-16",
+                "desc": "fine-tuned Llama-2-7b-hf on viggo dataset"
+            },
+            {
+                "addr": "https://huggingface.co/abcdabcd987/sqlctx-llama2-7b-lora-16",
+                "desc": "fine-tuned Llama-2-7b-hf on sqlctx dataset"
+            },
+            {
+                "addr": "https://huggingface.co/abcdabcd987/gsm8k-llama2-7b-lora-16",
+                "desc": "fine-tuned Llama-2-7b-hf on gsm8k dataset"
+            },
+            {
+                "addr": "https://huggingface.co/gsomers-smarsh/llama2-7b-qlora-email-classifier2",
+                "desc": "fine-tuned llama2-7b for email classification"
+            },
+            {
+                "addr": "https://huggingface.co/gsomers-smarsh/llama2-7b-tweetsumm-lora-finetune6",
+                "desc": "fine-tuned llama2-7b for tweet summarization"
+            },
+            {
+                "addr": "https://huggingface.co/douy/Llama-2-7B-lora-instruction-ft-abstraction-three-span",
+                "desc": "fine-tuned Llama-2-7B to abstract a given self-disclosure (personal information) in a sentence, which is rephrasing disclosures with less specific details while preserving the content utility. For example, '22 year old' -> 'in early 20s'"
+            },
+            {
+                "addr": "https://huggingface.co/wesley7137/llama-2-7B-AddictionCounseling-lora",
+                "desc": "fine-tuned Llama-2-7B to help addition counseling"
+            },
+            {
+                "addr": "https://huggingface.co/DrishtiSharma/llama-2-7b-flash-attention2-lora-patent-classification",
+                "desc": "fine-tuned Llama-2-7B-hf on the patent-classification dataset"
+            }
+        ]
+    },
+    "llama2-13b": [
+        {
+            "addr": "",
+            "desc": ""
+        }
+    ],
+    "mistral-7b": [
+        {
+            "addr": "",
+            "desc": ""
+        }
+    ]
+}
